@@ -9,13 +9,10 @@ namespace Data
 {
     public class AppDbContext : DbContext
     {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
         public DbSet<Card> Cards { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite("Data Source=rapidpay-test.db");
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
