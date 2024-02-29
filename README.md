@@ -1,4 +1,6 @@
 # rapidpay
 
 Run tests 
-`dotnet test` in /Tests/Logic.UnitTests and in /Tests/WebApi.IntegrationTests
+`dotnet test` in same level of `rapidpay.sln` file
+
+`dotnet run --project WebApi` for swagger documentation
