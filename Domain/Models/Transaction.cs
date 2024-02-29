@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Data.Base;
+using Domain.Models.Base;
 
-namespace Data
+namespace Domain.Models
 {
-    public class Transaction : EntityBase
+    public class Transaction : ModelBase
     {
         public Guid CardId { get; set; }
         public decimal Amount { get; set; }
