@@ -16,6 +16,7 @@ namespace WebApi.Configuration.Extensions
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped<ICardRepository, CardRepository>();
             builder.Services.AddScoped<ICardService, CardService>();
+            builder.Services.AddSingleton<IUniversalFeesExchange>(UniversalFeesExchange.Instance);
 
             return builder;
         }

@@ -14,11 +14,13 @@ namespace Logic
     {
         private readonly ICardRepository _cardRepository;
         private readonly IRepository<Transaction> _transactionRepository;
+        private readonly IUniversalFeesExchange _feesExchange;
 
-        public CardService(ICardRepository cardRepository, IRepository<Transaction> transactionRepository)
+        public CardService(ICardRepository cardRepository, IRepository<Transaction> transactionRepository, IUniversalFeesExchange feesExchange)
         {
             _cardRepository = cardRepository;
             _transactionRepository = transactionRepository;
+            _feesExchange = feesExchange;
         }
 
         public async Task<Card> CreateAsync(CreateCardRequest request)
@@ -41,6 +43,8 @@ namespace Logic
         }
         public async Task<Card> PayAsync(CommitTransactionRequest request)
         {
+            var fee = _feesExchange.GetCurrentFee();
+            request.Amount = request.Amount + fee;
             if (await HasEnoughBalanceAsync(request))
             {
                 if (request.Amount > 0)

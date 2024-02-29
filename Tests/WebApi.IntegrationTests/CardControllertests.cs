@@ -48,9 +48,9 @@ namespace WebApi.IntegrationTests
             var payResponse2 = await _client.PostAsJsonAsync("/api/Card/Pay", new CommitTransactionRequest { CardCode = card.Code, Amount = 50 });
             Assert.That(payResponse2.IsSuccessStatusCode);
             card = await payResponse2.Content.ReadAsAsync<Card>();
-            Assert.That(card.Balance == 50);
+            Assert.That(card.Balance < 50);
 
-            var payResponse3 = await _client.PostAsJsonAsync("/api/Card/Pay", new CommitTransactionRequest { CardCode = card.Code, Amount = 51 });
+            var payResponse3 = await _client.PostAsJsonAsync("/api/Card/Pay", new CommitTransactionRequest { CardCode = card.Code, Amount = card.Balance + 1 });
             Assert.That(payResponse3.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest), "Not nough balance operation should return bad request");
         }
     }
