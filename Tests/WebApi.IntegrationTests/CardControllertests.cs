@@ -20,11 +20,16 @@ namespace WebApi.IntegrationTests
         private CustomWebApplicationFactory _factory;
 
         [SetUp]
-        public void SetUp()
+        public async Task SetUp()
         {
             _factory = new CustomWebApplicationFactory();
             _client = _factory.CreateClient();
+
+            var token = await GetAuthTokenAsync();
+
+            _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
+
 
         [TearDown]
         public void TearDown()
@@ -53,5 +58,23 @@ namespace WebApi.IntegrationTests
             var payResponse3 = await _client.PostAsJsonAsync("/api/Card/Pay", new CommitTransactionRequest { CardCode = card.Code, Amount = card.Balance + 1 });
             Assert.That(payResponse3.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest), "Not nough balance operation should return bad request");
         }
+
+        private async Task<string> GetAuthTokenAsync()
+        {
+            var loginModel = new { Username = "testuser", Password = "testpassword" };
+            var loginResponse = await _client.PostAsJsonAsync("/api/auth/token", loginModel);
+
+            Assert.That(loginResponse.IsSuccessStatusCode, "Authentication failed, check setup for test user.");
+
+            var loginResult = await loginResponse.Content.ReadFromJsonAsync<TokenResponse>();
+            return loginResult?.Token;
+        }
+
+        public class TokenResponse
+        {
+            public string Token { get; set; }
+        }
+
+
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Domain.DTO;
 using Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers
 {
@@ -17,6 +18,7 @@ namespace WebApi.Controllers
         }
 
         // POST: api/Card/Create
+        [Authorize]
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] CreateCardRequest request)
         {
@@ -41,6 +43,7 @@ namespace WebApi.Controllers
         }
 
         // POST: api/Card/Pay
+        [Authorize]
         [HttpPost("Pay")]
         public async Task<IActionResult> Pay([FromBody] CommitTransactionRequest request)
         {

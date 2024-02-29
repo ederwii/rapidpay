@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.ConfigureDatabase();
 builder.ConfigureDI();
-// Add services to the container.
+builder.ConfigureAuthentication();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -30,6 +30,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication(); 
 
 app.UseAuthorization();
 
