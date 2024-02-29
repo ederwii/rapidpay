@@ -4,11 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain.Interfaces.Services;
 using Domain.Interfaces.Repositories;
+using Data.Repositories;
 using Logic;
 
 namespace WebApi.Configuration.Extensions
 {
-    public class RegisterDependencyInjectionExtension
+    public static class RegisterDependencyInjectionExtension
     {
         public static WebApplicationBuilder ConfigureDI(this WebApplicationBuilder builder)
         {

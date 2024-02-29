@@ -35,16 +35,29 @@ namespace Logic
                 Amount = request.InitialBalance
             };
 
-            await CommitTransaction(initialTransaction);
+            await CommitTransactionAsync(initialTransaction);
 
             return card;
         }
-        public async Task<Card> CommitTransaction(CommitTransactionRequest request)
+        public async Task<Card> PayAsync(CommitTransactionRequest request)
+        {
+            if (await HasEnoughBalanceAsync(request))
+            {
+                if (request.Amount > 0)
+                    request.Amount *= -1;
+                return await CommitTransactionAsync(request);
+            }
+            else
+            {
+                throw new ArgumentException("Not enough balance.");
+            }
+        }
+        public async Task<Card> CommitTransactionAsync(CommitTransactionRequest request)
         {
             var card = await _cardRepository.GetByCodeAsync(request.CardCode);
             if (card == null)
             {
-                throw new Exception("Card not found");
+                throw new ArgumentException("Card not found");
             }
 
             var transaction = new Transaction
@@ -55,24 +68,36 @@ namespace Logic
 
             await _transactionRepository.AddAsync(transaction);
 
-            return await RecalculateBalance(card.CardId);
+            return await RecalculateBalanceAsync(card.CardId);
+
         }
 
-        public async Task<Card> RecalculateBalance(Guid cardId)
+        public async Task<Card> RecalculateBalanceAsync(Guid cardId)
         {
             var card = await _cardRepository.GetByIdAsync(cardId);
             if (card == null)
             {
-                throw new Exception("Card not found");
+                throw new ArgumentException("Card not found");
             }
 
             var newBalance = card.Transactions.Sum(t => t.Amount);
 
-            card.Balance = newBalance;
+            card.Balance += newBalance;
 
             await _cardRepository.UpdateAsync(card);
 
             return card;
+        }
+
+        private async Task<bool> HasEnoughBalanceAsync(CommitTransactionRequest request)
+        {
+            var card = await _cardRepository.GetByCodeAsync(request.CardCode);
+            if (card == null)
+            {
+                throw new ArgumentException("Card not found");
+            }
+
+            return card.Balance >= request.Amount;
         }
 
 

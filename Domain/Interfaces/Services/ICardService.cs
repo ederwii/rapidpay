@@ -10,7 +10,8 @@ namespace Domain.Interfaces.Services
     public interface ICardService
     {
         Task<Card> CreateAsync(CreateCardRequest request);
-        Task<Card> CommitTransaction(CommitTransactionRequest request);
-        Task<Card> RecalculateBalance(Guid cardId);
+        Task<Card> CommitTransactionAsync(CommitTransactionRequest request);
+        Task<Card> RecalculateBalanceAsync(Guid cardId);
+        Task<Card> PayAsync(CommitTransactionRequest request);
     }
 }
