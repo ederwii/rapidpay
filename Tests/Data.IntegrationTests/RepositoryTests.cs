@@ -16,7 +16,7 @@ namespace Data.IntegrationTests
             using var context = DbContextFactory.CreateDbContext();
             var repository = new Repository<Card>(context);
 
-            var card = new Card { Code = "Test-Code", Balance = 100.0m };
+            var card = new Card("Test-code") { Balance = 100.0m };
 
             var addedCard = await context.Set<Card>().FindAsync(card.CardId);
             Assert.IsNull(addedCard);
@@ -33,8 +33,8 @@ namespace Data.IntegrationTests
             using var context = DbContextFactory.CreateDbContext();
             var repository = new Repository<Card>(context);
 
-            await repository.AddAsync(new Card { Code = "Test-Code1", Balance = 100.0m });
-            await repository.AddAsync(new Card { Code = "Test-Code2", Balance = 200.0m });
+            await repository.AddAsync(new Card("Test-Code1") { Balance = 100.0m });
+            await repository.AddAsync(new Card("Test-Code2") { Balance = 200.0m });
 
             var cards = await repository.GetAllAsync();
 
@@ -47,7 +47,7 @@ namespace Data.IntegrationTests
             using var context = DbContextFactory.CreateDbContext();
             var repository = new Repository<Card>(context);
 
-            var card = new Card { Code = "Test-Code", Balance = 100.0m };
+            var card = new Card("Test-Code") { Balance = 100.0m };
             await repository.AddAsync(card);
 
             var retrievedCard = await repository.GetByIdAsync(card.CardId);
@@ -62,7 +62,7 @@ namespace Data.IntegrationTests
             using var context = DbContextFactory.CreateDbContext();
             var repository = new Repository<Card>(context);
 
-            var card = new Card { Code = "Test-Code", Balance = 100.0m };
+            var card = new Card("Test-Code") { Balance = 100.0m };
             await repository.AddAsync(card);
 
             card.Balance = 200.0m;
@@ -80,7 +80,7 @@ namespace Data.IntegrationTests
             using var context = DbContextFactory.CreateDbContext();
             var repository = new Repository<Card>(context);
 
-            var card = new Card { Code = "Test-Code", Balance = 100.0m };
+            var card = new Card("Test-Code") { Balance = 100.0m };
             await repository.AddAsync(card);
 
             var addedCard = await repository.GetByIdAsync(card.CardId);
@@ -96,7 +96,7 @@ namespace Data.IntegrationTests
         public void Cleanup()
         {
             using var context = DbContextFactory.CreateDbContext();
-            context.Database.EnsureDeleted(); 
+            context.Database.EnsureDeleted();
         }
 
     }

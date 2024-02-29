@@ -16,14 +16,16 @@ namespace Logic.UnitTests
     {
         private Mock<ICardRepository> _mockCardRepository;
         private Mock<IRepository<Transaction>> _mockTransactionRepository;
+        private Mock<IUniversalFeesExchange> _mockIUniversalFeesExchange;
         private ICardService _cardService;
 
         [SetUp]
         public void Setup()
         {
             _mockCardRepository = new Mock<ICardRepository>();
+            _mockIUniversalFeesExchange = new Mock<IUniversalFeesExchange>();
             _mockTransactionRepository = new Mock<IRepository<Transaction>>();
-            _cardService = new CardService(_mockCardRepository.Object, _mockTransactionRepository.Object);
+            _cardService = new CardService(_mockCardRepository.Object, _mockTransactionRepository.Object, _mockIUniversalFeesExchange.Object);
         }
 
         [Test]
@@ -62,7 +64,7 @@ namespace Logic.UnitTests
                 .Returns(Task.FromResult(It.IsAny<Transaction>()));
             _mockCardRepository.Setup(repo => repo.UpdateAsync(It.IsAny<Card>())).Returns(Task.FromResult(card));
 
-            var result = await _cardService.CommitTransaction(request);
+            var result = await _cardService.CommitTransactionAsync(request);
 
             _mockTransactionRepository.Verify(repo => repo.AddAsync(It.IsAny<Transaction>()), Times.Once);
         }
@@ -79,7 +81,7 @@ namespace Logic.UnitTests
             _mockCardRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(card);
             _mockCardRepository.Setup(repo => repo.UpdateAsync(It.IsAny<Card>())).Returns(Task.CompletedTask);
 
-            var result = await _cardService.RecalculateBalance(Guid.NewGuid());
+            var result = await _cardService.RecalculateBalanceAsync(Guid.NewGuid());
 
             _mockCardRepository.Verify(repo => repo.UpdateAsync(It.IsAny<Card>()), Times.Once);
         }
